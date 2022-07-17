@@ -22,7 +22,6 @@ def all_combinations(nums):
     results = []
     for i in range(size):
         sub_results = combinations(nums, i+1)
-        print(sub_results)
         results += sub_results
     return results
 
