@@ -18,7 +18,7 @@ class Solution:
                     length = i - start_of_seq
                     if length > longest_length:
                         longest_length = length
-                if start_of_seq < starts[e]:
+                if start_of_seq <= starts[e]:
                     start_of_seq = i
                 elif start_of_seq > biggest_start:
                     start_of_seq = starts[e] + 1
