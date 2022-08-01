@@ -27,3 +27,27 @@ n == height.length
 2 <= n <= 105
 0 <= height[i] <= 104
 '''
+class Solution:
+    def maxArea(self, array):
+        max_area = 0
+        max_height = 0
+        for i, e in enumerate(array):
+            if e <= max_height:
+                continue
+            inner_max_height = 0
+            for j in range(len(array), 0, -1):
+                idx = j - 1
+                if idx <= i:
+                    continue
+                if inner_max_height >= array[idx]:
+                    continue
+                area = min(e,array[idx]) * (idx - i) 
+                max_area = max(max_area, area)
+                inner_max_height = array[idx]
+            max_height = e
+        return max_area
+
+
+s = Solution()
+assert s.maxArea([1,1]) == 1
+assert s.maxArea([1,8,6,2,5,4,8,3,7]) == 49
