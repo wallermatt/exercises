@@ -47,7 +47,28 @@ class Solution:
             max_height = e
         return max_area
 
+    def maxArea2(self, array):
+        left_max = [0,0]
+        right_max = [0,0]
+        len_ = len(array)
+        for i, e in enumerate(array):
+            left = e * (len_ - i)
+            right = e * (i + 1)
+            if left > left_max[0]:
+                left_max = [left, i]
+            if right > right_max[0]:
+                right_max = [right, i]
+        #print(left_max, right_max, min(array[right_max[1]], array[left_max[1]]) * right_max[1] - left_max[1])
+        return min(array[right_max[1]], array[left_max[1]]) * (right_max[1] - left_max[1])
+            
+
+
+
+
 
 s = Solution()
 assert s.maxArea([1,1]) == 1
 assert s.maxArea([1,8,6,2,5,4,8,3,7]) == 49
+
+assert s.maxArea2([1,1]) == 1
+assert s.maxArea2([1,8,6,2,5,4,8,3,7]) == 49
