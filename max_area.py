@@ -42,26 +42,19 @@ n == height.length
 '''
 class Solution:
     def maxArea(self, height):
-        len_ = len(height)
-        biggest = 0
-        right = {}
-        for i in range(len_ -1, 0, -1):
-            if height[i] > biggest:
-                right[height[i]] = i
-                biggest = height[i]
-        biggest = 0
-        left = {}
-        for i in range(len_):
-            if height[i] > biggest:
-                left[height[i]] = i
-                biggest = height[i]
-        max_area = 0
-        for l in left:
-            for r in right:
-                area = min(l,r) * (right[r] - left[l])
-                if area > max_area:
-                    max_area = area
-        return max_area
+        maxarea = 0
+        left = 0
+        right = len(height) - 1
+        
+        while left < right:
+            width = right - left
+            maxarea = max(maxarea, min(height[left], height[right]) * width)
+            if height[left] <= height[right]:
+                left += 1
+            else:
+                right -= 1
+                
+        return maxarea
         
 
     def maxArea2(self, height):
@@ -101,16 +94,12 @@ class Solution:
                 if area > max_area:
                     max_area = area
                     max_height = r[0]
-            print(l, r, max_area, "left: ", left, "right: ", right)
-            if max_height:
-                new_right = [e for e in right if e[0] <= max_height or e[1] <= l[1]]
-                right = new_right
         return max_area
             
 
 
 s = Solution()
-assert s.maxArea3([177,112,74,197,90,16,4,61,103,133,198,4,121,143,55,138,47,167,165,159,93,85,53,118,127,171,137,65,135,45,151,64,109,25,61,152,194,65,165,97,199,163,53,72,58,108,10,105,27,127,64,120,164,70,190,91,41,127,109,176,172,12,193,34,38,54,138,184,120,103,33,71,66,86,143,125,146,105,182,173,184,199,46,148,69,36,192,110,116,53,38,40,65,31,74,103,86,12,39,158]) == 15936
+assert s.maxArea([177,112,74,197,90,16,4,61,103,133,198,4,121,143,55,138,47,167,165,159,93,85,53,118,127,171,137,65,135,45,151,64,109,25,61,152,194,65,165,97,199,163,53,72,58,108,10,105,27,127,64,120,164,70,190,91,41,127,109,176,172,12,193,34,38,54,138,184,120,103,33,71,66,86,143,125,146,105,182,173,184,199,46,148,69,36,192,110,116,53,38,40,65,31,74,103,86,12,39,158]) == 15936
 
 assert s.maxArea3([4,4,2,11,0,11,5,11,13,8]) == 55
 assert s.maxArea3([1,1]) == 1
