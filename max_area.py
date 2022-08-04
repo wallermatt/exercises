@@ -24,72 +24,86 @@ Output: 1
 Constraints:
 
 n == height.length
-2 <= n <= 105
-0 <= height[i] <= 104
+2 <= n <= 10^5
+0 <= height[i] <= 10^4
+
+[1]
+
+[1,2] = 1
+
+[1,2,1] = 2
+
+[1,2,2] = 2
+
+[1,3,3] = 3
+
+[]
+
 '''
 class Solution:
-    def maxArea(self, array):
-        max_area = 0
-        max_height = 0
-        for i, e in enumerate(array):
-            if e <= max_height:
-                continue
-            inner_max_height = 0
-            for j in range(len(array), 0, -1):
-                idx = j - 1
-                if idx <= i:
-                    continue
-                if inner_max_height >= array[idx]:
-                    continue
-                area = min(e,array[idx]) * (idx - i) 
-                max_area = max(max_area, area)
-                inner_max_height = array[idx]
-            max_height = e
-        return max_area
-
-    def maxArea2(self, array):
-        len_ = len(array)
-        if len_ == 2:
-            return min(array[0], array[1])
-
-        max_at_pos = [0 for e in range(len_)]
-        for i,e in array:
-            if i == 0:
-                max_at_pos[0] = e
-            elif e > max_at_pos[i-1]:
-                max_at_pos[i] = e
+    def maxArea(self, height):
+        maxarea = 0
+        left = 0
+        right = len(height) - 1
+        
+        while left < right:
+            width = right - left
+            maxarea = max(maxarea, min(height[left], height[right]) * width)
+            if height[left] <= height[right]:
+                left += 1
             else:
-                max_at_pos[i] = max_at_pos[i-1]
+                right -= 1
+                
+        return maxarea
         
 
-        left_max = [0,0]
-        right_max = [0,len_]
-        for i, e in enumerate(array):
-            if i == 0
-            left = min(max_at_pos[i-1], e) * (len_ - i)
-            right = e * (i + 1)
-            if len_ - i == i + 1:
-                continue
-            if left > left_max[0] and i < right_max[1]:
-                left_max = [left, i]
-            if right > right_max[0] and i > left_max[1]:
-                right_max = [right, i]
-        print(left_max, right_max, min(array[right_max[1]], array[left_max[1]]) * right_max[1] - left_max[1])
-        return min(array[right_max[1]], array[left_max[1]]) * (right_max[1] - left_max[1])
+    def maxArea2(self, height):
+        furthest = {}
+        max_area = 0
+        biggest = 0
+        for i,e in enumerate(height):
+            for n in furthest:
+                area = min(n,e) * (i - furthest[n])
+                if area > max_area:
+                    max_area = area
+            if e > biggest:
+                furthest[e] = i
+                biggest = e
+        return max_area
+
+    def maxArea3(self, height):
+        len_ = len(height)
+        biggest = 0
+        right = []
+        for i in range(len_ -1, 0, -1):
+            if height[i] > biggest:
+                right = [[height[i], i]] + right
+                biggest = height[i]
+        biggest = 0
+        left = []
+        for i in range(len_):
+            if height[i] > biggest:
+                left = [[height[i], i]] + left
+                biggest = height[i]
+        max_area = 0
+        for l in left:
+            max_height = 0
+            max_idx = 0
+            for r in right:
+                area = min(l[0],r[0]) * (r[1] - l[1])
+                if area > max_area:
+                    max_area = area
+                    max_height = r[0]
+        return max_area
             
 
 
-
-
-
 s = Solution()
+assert s.maxArea([177,112,74,197,90,16,4,61,103,133,198,4,121,143,55,138,47,167,165,159,93,85,53,118,127,171,137,65,135,45,151,64,109,25,61,152,194,65,165,97,199,163,53,72,58,108,10,105,27,127,64,120,164,70,190,91,41,127,109,176,172,12,193,34,38,54,138,184,120,103,33,71,66,86,143,125,146,105,182,173,184,199,46,148,69,36,192,110,116,53,38,40,65,31,74,103,86,12,39,158]) == 15936
 
-assert s.maxArea2([1,2,4,3]) == 4
-assert s.maxArea2([2, 1]) == 1
-assert s.maxArea2([1,2, 1]) == 2
+assert s.maxArea3([4,4,2,11,0,11,5,11,13,8]) == 55
+assert s.maxArea3([1,1]) == 1
+assert s.maxArea3([1,8,6,2,5,4,8,3,7]) == 49
 
-assert s.maxArea([1,1]) == 1
-assert s.maxArea([1,8,6,2,5,4,8,3,7]) == 49
-
-assert s.maxArea2([1,1]) == 1
-assert s.maxArea2([1,8,6,2,5,4,8,3,7]) == 49
+#assert s.maxArea2([1,1]) == 1
+#assert s.maxArea2([1,8,6,2,5,4,8,3,7]) == 49
