@@ -63,3 +63,31 @@ s consists of English letters (lower-case and upper-case), digits (0-9), ' ', '+
 '''
 class Solution:
     def myAtoi(self, s: str) -> int:
+        s = s.lstrip()
+        raw_num = s.split(" ")[0]
+        parsed_num = ""
+        for d in raw_num:
+            if d.isdigit() or ((d == "+" or d == "-") and not parsed_num):
+                parsed_num += d
+            else:
+                if len(parsed_num) and (parsed_num != "+" and parsed_num != "-"):
+                    break
+                else:
+                    return 0
+        if not parsed_num:
+            return 0
+        if not parsed_num.isdigit():
+           if not (parsed_num[1:].isdigit() and (parsed_num[0] == "+" or parsed_num[0] == "-")):
+                return 0
+        num = int(parsed_num)
+        if num > (2**31 -1):
+            return 2**31 - 1
+        if num < -1 * 2**31:
+            return -1 * 2**31
+        return num
+
+s = Solution()
+
+assert s.myAtoi("42") == 42
+assert s.myAtoi("    -42") == -42
+assert s.myAtoi("4193 with words") == 4193
