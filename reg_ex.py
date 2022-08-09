@@ -34,3 +34,43 @@ It is guaranteed for each appearance of the character '*', there will be a previ
 '''
 class Solution:
     def isMatch(self, s: str, p: str) -> bool:
+        s_idx = 0
+        ast_char = ""
+        ast_start = -1
+        #import pdb; pdb.set_trace()
+        for i, e in enumerate(p):
+            if e == "*":
+                continue
+            if i + 1 < len(p) and p[i + 1] == "*":
+                ast_char = e
+                ast_start = s_idx
+                while s_idx < len(s) and ast_char == s[s_idx]:
+                    s_idx += 1
+                ast_char = ""
+                ast_start = -1
+                continue
+            if s_idx == len(s):
+                return False
+            if e == s[s_idx] or e == '.':
+                s_idx += 1
+            else:
+                return False
+        if s_idx != len(s):
+            return False
+        return True
+
+
+s = Solution()
+
+assert s.isMatch("ac", "a*.") == False
+assert s.isMatch("", "a*") == True
+assert s.isMatch("a", "a*") == True
+assert s.isMatch("aa", "a*") == True
+assert s.isMatch("aaaaa", "a*") == True
+assert s.isMatch("", "") == True
+assert s.isMatch("a", "a") == True
+assert s.isMatch("a", ".") == True
+assert s.isMatch("ab", "ab") == True
+assert s.isMatch("ab", "a.") == True
+assert s.isMatch("abc", "a.") == False
+assert s.isMatch("ac", "a*.") == False
