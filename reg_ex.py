@@ -31,6 +31,17 @@ Constraints:
 s contains only lowercase English letters.
 p contains only lowercase English letters, '.', and '*'.
 It is guaranteed for each appearance of the character '*', there will be a previous valid character to match.
+
+
+a*b
+a*aa* 1+ a
+
+a*. = 1+ a or 1 other char
+
+
+.* = any
+.*a =
+
 '''
 class Solution:
     def isMatch(self, s: str, p: str) -> bool:
