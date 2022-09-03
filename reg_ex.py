@@ -42,6 +42,21 @@ a*. = 1+ a or 1 other char
 .* = any
 .*a =
 
+a*. = b,a,aa,aab = 0+ a & ., 1+ a,
+
+a*b* = 0+ a & 0+ b
+
+a*a* = 0+ a
+
+a*.b* = 0+ a & . & 0+ b, 1+a & 0+ b, 0+ a & 1+ b
+
+a*a = 1+ a
+
+
+aaaa
+
+
+
 '''
 class Solution:
     def isMatch(self, s: str, p: str) -> bool:
@@ -73,7 +88,10 @@ class Solution:
 
 s = Solution()
 
-assert s.isMatch("ac", "a*.") == False
+assert s.isMatch("a", "a*.") == True
+assert s.isMatch("c", "a*.") == True
+assert s.isMatch("aac", "a*.") == True
+assert s.isMatch("ac", "a*.") == True
 assert s.isMatch("", "a*") == True
 assert s.isMatch("a", "a*") == True
 assert s.isMatch("aa", "a*") == True
@@ -84,4 +102,3 @@ assert s.isMatch("a", ".") == True
 assert s.isMatch("ab", "ab") == True
 assert s.isMatch("ab", "a.") == True
 assert s.isMatch("abc", "a.") == False
-assert s.isMatch("ac", "a*.") == False
