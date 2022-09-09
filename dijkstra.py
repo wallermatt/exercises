@@ -44,6 +44,47 @@ def build_initial_costs(graph):
                     costs[d] = float("inf")
     return costs
 
+def get_lowest_unprocessed_node(costs, processed):
+    lowest_cost = float("inf")
+    lowest_cost_node = ""
+    for n in costs:
+        if n in processed:
+            continue
+        if costs[n] < lowest_cost:
+            lowest_cost_node = n
+            lowest_cost = costs[n]
+    return lowest_cost_node
 
+def update_costs(costs, parents, node):
+    for p in parents:
+        if node in parents[p]:
+            new_cost = costs[node] + parents[p][node]
+            if costs[p] > new_cost:
+                costs[p] = new_cost
+
+
+def get_lowest_path(graph):
+    parents = build_parents(graph)
+    costs = build_initial_costs(graph)
+    processed = []
+    while len(processed) < len(graph) - 1:
+        n = get_lowest_unprocessed_node(costs, processed)
+        update_costs(costs, parents, n)
+        processed.append(n)
+    return costs
+
+
+print(get_lowest_path(GRAPH))
+
+'''
 print(build_parents(GRAPH))
 print(build_initial_costs(GRAPH))
+
+parents = build_parents(GRAPH)
+costs = build_initial_costs(GRAPH)
+n = get_lowest_unprocessed_node(costs, [])
+print(n)
+
+update_costs(costs, parents, 'b')
+print(costs)
+'''
