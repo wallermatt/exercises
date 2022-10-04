@@ -39,6 +39,9 @@ class Solution:
             return self.getArrayMedian(nums1)
         elif len(nums1) == 1 and len(nums2) == 1:
             return (nums1[0] + nums2[0]) / 2
+        elif len(nums1) <= 2 or len(nums2) <= 2:
+            return self.getArrayMedian(sorted(nums1 + nums2))
+
 
         median1 = self.getArrayMedian(nums1)
         median2 = self.getArrayMedian(nums2)
@@ -64,7 +67,7 @@ class Solution:
         if len_ == 1:
             return []
         if len_ % 2 == 1:
-            return nums[:(len_ // 2)]
+            return nums[:(len_ // 2) +1]
         else:
             return nums[:len_ // 2] 
 
@@ -73,7 +76,7 @@ class Solution:
         if len_ == 1:
             return []
         if len_ % 2 == 1:
-            return nums[(len_ // 2) + 1:]
+            return nums[(len_ // 2):]
         else:
             return nums[len_ // 2:] 
 
@@ -83,6 +86,15 @@ s = Solution()
 #print(s.joinTwoSortedArrays([1,2,3,7,11], [1,2,3,4]))
 #print(s.getArrayMedia([1,2,3]))
 #print(s.getArrayMedia([1,2,3,4]))
+
+x = [1,2,5]
+y = [3,4,6]
+#assert s.findMedianSortedArrays(x,y) == 3.5
+
+x = [1,2,3]
+y = [4,5,6,7]
+assert s.findMedianSortedArrays(x,y) == 4
+
 assert s.findMedianSortedArrays([1, 2], [-1,3]) == 1.5
 
 
