@@ -53,7 +53,11 @@ def get_shortest_class(classes, start):
 def schedule(classes, start=1):
     schedule = []
     while classes:
-        next_class = get_shortest_class(classes, start)
+        next_class = None
+        while not next_class:
+            next_class = get_shortest_class(classes, start)
+            if not next_class:
+                start += 1
         schedule.append(next_class)
         start = next_class.end
         classes = [c for c in classes if c.start >= start]
@@ -61,3 +65,7 @@ def schedule(classes, start=1):
     
 #print(schedule([Class('english',1,3)], 1))
 assert schedule([Class('english',1,3)], 1) == [Class('english',1,3)]
+assert schedule([Class('english',1,3), Class('french',1,2)], 1) == [Class('french',1,2)]
+assert schedule([Class('english',2,3), Class('french',1,2)], 1) == [Class('french',1,2), Class('english',2,3)]
+
+assert schedule([Class('english',2,3)], 1) == [Class('english',2,3)]
