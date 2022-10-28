@@ -11,6 +11,16 @@ WHITE = (0xFF, 0xFF, 0xFF)
 
 pygame.draw.rect(display_screen, WHITE, [55, 50, 20, 25], width=0)
 
+pygame.draw.line(display_screen, WHITE, (60, 60), (120, 60), 4)
+pixObj = pygame.PixelArray(display_screen)
+pixObj[480][380] = WHITE
+pixObj[450][250] = WHITE
+pixObj[420][350] = WHITE
+
+pygame.draw.line(display_screen, WHITE, (480, 380), (450, 250), 1)
+pygame.draw.line(display_screen, WHITE, (450, 250), (420, 350), 1)
+pygame.draw.line(display_screen, WHITE, (420, 350), (480, 380), 1)
+
 run = True
 while run:
 
