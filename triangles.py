@@ -15,11 +15,14 @@ semi-perim = 6
 
 sqrt(6 * 2 * 3 * 1) = 6
 '''
+import pygame
 
 POINTS = [
     (0,0),
     (0,4),
     (3,0),
+    (1,1),
+    (4, 12),
 ]
 
 
@@ -37,4 +40,54 @@ def calc_triangle_area(coords):
     return (s * (s - a) * (s - b) * (s - c))**0.5
     
 
-print(calc_triangle_area(POINTS))
+def get_biggest_triangle(points):
+    max_area = 0
+    max_points = []
+    for i, p1 in enumerate(points):
+        for j, p2 in enumerate(points[i+1:]):
+            for k, p3 in enumerate(points[i+j+2:]):
+                area = calc_triangle_area([p1, p2, p3])
+                if area > max_area:
+                    max_area = area
+                    max_points = [p1, p2, p3]
+    return max_area, max_points
+
+
+def conv_ax(ax):
+    return 100 + ax * 50
+
+def graphical_display(points):
+    WHITE = (0xFF, 0xFF, 0xFF)
+
+    pygame.init()
+    display_screen = pygame.display.set_mode((800,800))
+
+    pixObj = pygame.PixelArray(display_screen)
+    for p in points:
+        x, y = [conv_ax(e) for e in p]
+        pixObj[x][y] = WHITE
+
+
+    _, max_points = get_biggest_triangle(points)
+    p1, p2, p3 = [[conv_ax(e) for e in p] for p in max_points]
+    pygame.draw.line(display_screen, WHITE, p1, p2, 1)
+    pygame.draw.line(display_screen, WHITE, p2, p3, 1)
+    pygame.draw.line(display_screen, WHITE, p3, p1, 1)
+
+
+    run = True
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run =False
+
+        pygame.display.update()
+
+    pygame.quit()
+    quit()
+
+
+#print(calc_triangle_area(POINTS))
+print(get_biggest_triangle(POINTS))
+
+graphical_display(POINTS)
