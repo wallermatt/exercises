@@ -22,7 +22,9 @@ POINTS = [
     (0,4),
     (3,0),
     (1,1),
-    (4, 12),
+    (6, 12),
+    (5, 3),
+    (12,1),
 ]
 
 
@@ -53,7 +55,9 @@ def get_biggest_triangle(points):
     return max_area, max_points
 
 
-def conv_ax(ax):
+def conv_ax(ax, pos):
+    if pos:
+        ax = 12 - ax
     return 100 + ax * 50
 
 def graphical_display(points):
@@ -64,12 +68,12 @@ def graphical_display(points):
 
     pixObj = pygame.PixelArray(display_screen)
     for p in points:
-        x, y = [conv_ax(e) for e in p]
+        x, y = [conv_ax(e, i) for i, e in enumerate(p)]
         pixObj[x][y] = WHITE
 
 
     _, max_points = get_biggest_triangle(points)
-    p1, p2, p3 = [[conv_ax(e) for e in p] for p in max_points]
+    p1, p2, p3 = [[conv_ax(e, i) for i, e in enumerate(p)] for p in max_points]
     pygame.draw.line(display_screen, WHITE, p1, p2, 1)
     pygame.draw.line(display_screen, WHITE, p2, p3, 1)
     pygame.draw.line(display_screen, WHITE, p3, p1, 1)
