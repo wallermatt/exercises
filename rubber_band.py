@@ -21,13 +21,15 @@ POINTS = [
     (1,7),
     (2,10),
     (6,10),
+    (9,0.5),
+    (0.5,1),
 ]
 
 
 def traverse_outer_points(points, start, stop):
     x_from, y_from = start
     x_to, y_to = stop
-    gradient = (y_to - y_from) / (x_to - x_from) 
+    gradient = (y_to - y_from) / (x_to - x_from)
     path = [start]
     restart = True
     while restart:
@@ -38,11 +40,8 @@ def traverse_outer_points(points, start, stop):
                 continue
             if x_to - x_from == 0:
                 continue
-            new_gradient = (y_to - y_from) / (x_to - x_from) 
+            new_gradient = (y_to - y_from) / (x_to - x_from)
             if new_gradient > gradient:
-                print(x_from, y_from)
-                print(x_to, y_to)
-                print(gradient, new_gradient)
                 path.append(p)
                 x_from, y_from = x_to, y_to
                 x_to, y_to = stop
@@ -52,10 +51,13 @@ def traverse_outer_points(points, start, stop):
     return path
 
 
-def point_rot_90(point):
+def point_rot_90_anti_cw(point):
     x, y = point
-    return (y, x)
+    return (-y, x)
 
+def point_rot_90_cw(point):
+    x, y = point
+    return (y, -x)
 
 def get_outer_points(points):
     outer_points = {
@@ -84,52 +86,36 @@ def get_outer_points(points):
                     if yp < yo:
                         outer_points[o] = p
 
-    print(outer_points)
-
     top_left_points = traverse_outer_points(points, outer_points["left"], outer_points["top"])
 
-    print(top_left_points)
-            
-    x_from, y_from = outer_points["top"]
-    x_to, y_to = outer_points["right"]
-    gradient = (y_to - y_from) / (x_to - x_from) 
-    top_right_points = [outer_points["top"]]
-    restart = True
-    while restart:
-        restart = False
-        for p in points:
-            x_to, y_to = p
-            if x_to < x_from or y_to > y_from:
-                continue
-            if x_to - x_from == 0:
-                continue
-            new_gradient = (y_to - y_from) / (x_to - x_from) 
-            if new_gradient > gradient:
-                top_right_points.append(p)
-                x_from, y_from = x_to, y_to
-                x_to, y_to = outer_points["right"]
-                gradient = (y_to - y_from) / (x_to - x_from)
-                restart = True
-                break
-
-    print(top_right_points)
+    path = traverse_outer_points(
+        [point_rot_90_anti_cw(p) for p in points], 
+        point_rot_90_anti_cw(outer_points["top"]), 
+        point_rot_90_anti_cw(outer_points["right"])
+    )
+    top_right_points = [point_rot_90_cw(p) for p in path]
 
     path = traverse_outer_points(
-        [point_rot_90(p) for p in points], 
-        point_rot_90(outer_points["top"]), 
-        point_rot_90(outer_points["right"])
+        [point_rot_90_anti_cw(point_rot_90_anti_cw(p)) for p in points], 
+        point_rot_90_anti_cw(point_rot_90_anti_cw(outer_points["right"])), 
+        point_rot_90_anti_cw(point_rot_90_anti_cw(outer_points["bottom"]))
     )
-    top_right_points = [point_rot_90(p) for p in path]
+    bottom_right_points = [point_rot_90_cw(point_rot_90_cw(p)) for p in path]
 
-    print(top_right_points)
+    path = traverse_outer_points(
+        [point_rot_90_cw(p) for p in points], 
+        point_rot_90_cw(outer_points["bottom"]), 
+        point_rot_90_cw(outer_points["left"])
+    )
+    bottom_left_points = [point_rot_90_anti_cw(p) for p in path]
 
-    return top_left_points + top_right_points + [outer_points["right"], outer_points["bottom"]]
+    return top_left_points + top_right_points + bottom_right_points + bottom_left_points
 
 
 def conv_ax(ax, pos):
     if pos:
         ax = 12 - ax
-    return 100 + ax * 50
+    return int(100 + ax * 50)
 
 
 def graphical_display(points, from_p):
