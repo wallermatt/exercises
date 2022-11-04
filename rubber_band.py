@@ -7,7 +7,7 @@
 6. draw line from lowest point to leftmost point.
 
 '''
-
+import time
 import pygame
 
 POINTS = [
@@ -131,6 +131,10 @@ def graphical_display(points, from_p):
 
     #from_p = [outer_points["left"], outer_points["top"], outer_points["right"], outer_points["bottom"]]
     to_p = from_p[1:] + [from_p[0]]
+
+    pygame.display.update()
+
+    time.sleep(2)
 
     #import ipdb; ipdb.set_trace()
 
