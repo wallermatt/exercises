@@ -27,36 +27,36 @@ POINTS = [
 ]
 
 
+def calc_gradient(x_from, y_from, x_to, y_to):
+    if x_to == x_from:
+        if y_to == y_from:
+            return -1
+        return float('inf')
+    return (y_to - y_from) / (x_to - x_from)
+
 def traverse_outer_points(points, start, stop):
     x_from, y_from = start
     x_to, y_to = stop
-    gradient = (y_to - y_from) / (x_to - x_from)
+    max_gradient = calc_gradient(x_from, y_from, x_to, y_to)
     path = [start]
     restart = True
     while restart:
+        max_p = None
         restart = False
         for p in points:
             x_to, y_to = p
             if x_to < x_from or y_to < y_from:
                 continue
-            if x_to - x_from == 0 and y_to > y_from:
-                path.append(p)
-                x_from, y_from = x_to, y_to
-                x_to, y_to = stop
-                gradient = (y_to - y_from) / (x_to - x_from)
-                restart = True
-                break
-            elif x_to - x_from == 0:
-                continue
-
-            new_gradient = (y_to - y_from) / (x_to - x_from)
-            if new_gradient > gradient:
-                path.append(p)
-                x_from, y_from = x_to, y_to
-                x_to, y_to = stop
-                gradient = (y_to - y_from) / (x_to - x_from)
-                restart = True
-                break
+            new_gradient = calc_gradient(x_from, y_from, x_to, y_to)
+            if new_gradient > max_gradient:
+                max_gradient = new_gradient
+                max_p = p
+        if max_p:
+            path.append(max_p)
+            x_from, y_from = max_p
+            x_to, y_to = stop
+            max_gradient = calc_gradient(x_from, y_from, x_to, y_to)
+            restart = True
     return path
 
 
