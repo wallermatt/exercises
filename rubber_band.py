@@ -9,6 +9,7 @@
 '''
 import time
 import pygame
+import random
 
 POINTS = [
     (1,0),
@@ -38,8 +39,16 @@ def traverse_outer_points(points, start, stop):
             x_to, y_to = p
             if x_to < x_from or y_to < y_from:
                 continue
-            if x_to - x_from == 0:
+            if x_to - x_from == 0 and y_to > y_from:
+                path.append(p)
+                x_from, y_from = x_to, y_to
+                x_to, y_to = stop
+                gradient = (y_to - y_from) / (x_to - x_from)
+                restart = True
+                break
+            elif x_to - x_from == 0:
                 continue
+
             new_gradient = (y_to - y_from) / (x_to - x_from)
             if new_gradient > gradient:
                 path.append(p)
@@ -142,6 +151,8 @@ def graphical_display(points, from_p):
         x_from, y_from = [conv_ax(e, j) for j, e in enumerate(p)]
         x_to, y_to = [conv_ax(e, j) for j, e in enumerate(to_p[i])]
         pygame.draw.line(display_screen, WHITE, (x_from, y_from), (x_to, y_to), 1)
+        pygame.display.update()
+        time.sleep(1)
 
 
     run = True
@@ -156,6 +167,12 @@ def graphical_display(points, from_p):
     quit()
 
 
-op = get_outer_points(POINTS)
+
+random_points = []
+for _ in range(20):
+    random_points.append([random.randrange(0,13), random.randrange(0,13)])
+
+
+op = get_outer_points(random_points)
 print(op)
-graphical_display(POINTS, op)
+graphical_display(random_points, op)
