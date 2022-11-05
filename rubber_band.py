@@ -169,7 +169,7 @@ def graphical_display(points, from_p):
 
 
 random_points = []
-for _ in range(20):
+for _ in range(15):
     random_points.append([random.randrange(0,13), random.randrange(0,13)])
 
 
