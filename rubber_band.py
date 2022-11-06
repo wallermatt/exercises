@@ -30,7 +30,7 @@ POINTS = [
 def calc_gradient(x_from, y_from, x_to, y_to):
     if x_to == x_from:
         if y_to == y_from:
-            return -1
+            return -1 * float('inf')
         return float('inf')
     return (y_to - y_from) / (x_to - x_from)
 
@@ -169,8 +169,8 @@ def graphical_display(points, from_p):
 
 
 random_points = []
-for _ in range(15):
-    random_points.append([random.randrange(0,13), random.randrange(0,13)])
+for _ in range(30):
+    random_points.append([random.uniform(0,13), random.uniform(0,13)])
 
 
 op = get_outer_points(random_points)
