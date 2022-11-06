@@ -152,7 +152,7 @@ def graphical_display(points, from_p):
         x_to, y_to = [conv_ax(e, j) for j, e in enumerate(to_p[i])]
         pygame.draw.line(display_screen, WHITE, (x_from, y_from), (x_to, y_to), 1)
         pygame.display.update()
-        time.sleep(1)
+        time.sleep(0.5)
 
 
     run = True
