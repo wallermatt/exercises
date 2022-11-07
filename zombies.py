@@ -17,6 +17,7 @@ GREY = (210, 210 ,210)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 PURPLE = (255, 0, 255)
+BLACK = (0, 0, 0)
 
 
 class NPC(pygame.sprite.Sprite):
@@ -65,8 +66,10 @@ for _ in range(10):
     all_sprites_list.add(NPC(RED, random.randrange(0, ARENA_WIDTH), random.randrange(0, ARENA_HEIGHT)))
 
 turn = 0
-font = pygame.font.SysFont(None, 24)
-turn_display = font.render('hello {}'.format(turn), True, WHITE)
+font = pygame.font.SysFont('Arial', 24)
+#turn_display = font.render('hello {}'.format(turn), True, WHITE)
+
+
 
 
 while carryOn:
@@ -78,21 +81,23 @@ while carryOn:
             if event.key==pygame.K_x: #Pressing the x Key will quit the game
                     carryOn=False
 
-    
-    screen.blit(turn_display, (20, 20))
     for s in all_sprites_list:
         s.moveRight(CHAR_SIZE)
     all_sprites_list.update()
 
+    screen.fill(BLACK)
     pygame.draw.rect(screen, WHITE, [100,100, ARENA_WIDTH * CHAR_SIZE, ARENA_HEIGHT * CHAR_SIZE])
     
     all_sprites_list.draw(screen)
 
-    pygame.display.update()
+    turn_display = font.render("Current Turn: {}".format(str(turn)), False, WHITE)
+    screen.blit(turn_display,(10,10))
+
+    #pygame.display.update()
     #Refresh Screen
     pygame.display.flip()
 
     #Number of frames per second e.g. 60
-    clock.tick(1)
+    clock.tick(2)
  
 pygame.quit() 
