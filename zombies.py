@@ -2,6 +2,7 @@
 1. draw arena
 2. draw squares
 3. move squares
+4. display turn
 '''
 import pygame
 import random
@@ -63,27 +64,35 @@ all_sprites_list = pygame.sprite.Group()
 for _ in range(10):
     all_sprites_list.add(NPC(RED, random.randrange(0, ARENA_WIDTH), random.randrange(0, ARENA_HEIGHT)))
 
+turn = 0
+font = pygame.font.SysFont(None, 24)
+turn_display = font.render('hello {}'.format(turn), True, WHITE)
+
 
 while carryOn:
-        for event in pygame.event.get():
-            if event.type==pygame.QUIT:
-                carryOn=False
-            elif event.type==pygame.KEYDOWN:
-                if event.key==pygame.K_x: #Pressing the x Key will quit the game
-                     carryOn=False
+    turn += 1
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            carryOn=False
+        elif event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_x: #Pressing the x Key will quit the game
+                    carryOn=False
 
-        for s in all_sprites_list:
-            s.moveRight(CHAR_SIZE)
-        all_sprites_list.update()
+    
+    screen.blit(turn_display, (20, 20))
+    for s in all_sprites_list:
+        s.moveRight(CHAR_SIZE)
+    all_sprites_list.update()
 
-        pygame.draw.rect(screen, WHITE, [100,100, ARENA_WIDTH * CHAR_SIZE, ARENA_HEIGHT * CHAR_SIZE])
-        
-        all_sprites_list.draw(screen)
+    pygame.draw.rect(screen, WHITE, [100,100, ARENA_WIDTH * CHAR_SIZE, ARENA_HEIGHT * CHAR_SIZE])
+    
+    all_sprites_list.draw(screen)
 
-        #Refresh Screen
-        pygame.display.flip()
- 
-        #Number of frames per second e.g. 60
-        clock.tick(1)
+    pygame.display.update()
+    #Refresh Screen
+    pygame.display.flip()
+
+    #Number of frames per second e.g. 60
+    clock.tick(1)
  
 pygame.quit() 
