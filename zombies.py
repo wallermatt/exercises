@@ -6,6 +6,7 @@
 '''
 import pygame
 import random
+import typing
 
 
 CHAR_SIZE = 16
@@ -19,9 +20,21 @@ RED = (255, 0, 0)
 PURPLE = (255, 0, 255)
 BLACK = (0, 0, 0)
 
+class RandomPerson:
+    COLOUR = GREY
+
+    def __init__(self, column, row):
+        self.column = column
+        self.row = row
+        self.NPC = NPC(self.COLOUR, 100 + column * CHAR_SIZE, 100 + row * CHAR_SIZE)
+
+    def strategy(self, arena=None):
+        self.NPC.moveRight(CHAR_SIZE * random.randrange(-1,2))
+        self.NPC.moveDown(CHAR_SIZE * random.randrange(-1,2))
+
 
 class NPC(pygame.sprite.Sprite):
-    def __init__(self, type, column, row):
+    def __init__(self, colour, x, y):
         # Call the parent class (Sprite) constructor
         super().__init__()
         
@@ -34,10 +47,10 @@ class NPC(pygame.sprite.Sprite):
         # Draw the car (a rectangle!)
         #pygame.draw.rect(self.image, type, [column * CHAR_SIZE, row * CHAR_SIZE, CHAR_SIZE, CHAR_SIZE])
  
-        self.rect = pygame.draw.rect(self.image, type, [0, 0, CHAR_SIZE, CHAR_SIZE])
+        self.rect = pygame.draw.rect(self.image, colour, [0, 0, CHAR_SIZE, CHAR_SIZE])
 
-        self.rect.x = 100 + column * CHAR_SIZE
-        self.rect.y = 100 + row * CHAR_SIZE
+        self.rect.x = x
+        self.rect.y = y
 
         # Fetch the rectangle object that has the dimensions of the image.
         #self.rect = self.image.get_rect()
@@ -47,8 +60,16 @@ class NPC(pygame.sprite.Sprite):
             self.rect.x += pixels
  
     def moveLeft(self, pixels):
-        if not self.rect.x + pixels <= 0:
+        if not self.rect.x + pixels <= 100:
             self.rect.x -= pixels
+
+    def moveUp(self, pixels):
+        if not self.rect.y + pixels <= 100:
+            self.rect.y -= pixels
+
+    def moveDown(self, pixels):
+        if not self.rect.y + pixels >= 100 + ARENA_HEIGHT * CHAR_SIZE:
+            self.rect.y += pixels
 
 
 pygame.init()
