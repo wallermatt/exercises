@@ -10,8 +10,8 @@ import typing
 
 
 CHAR_SIZE = 16
-ARENA_WIDTH = 20
-ARENA_HEIGHT = 20
+ARENA_WIDTH = 19
+ARENA_HEIGHT = 19
 
 GREEN = (20, 255, 140)
 GREY = (210, 210 ,210)
@@ -37,8 +37,22 @@ class RandomPerson:
         self.sprite = MySprite(self.COLOUR, 100 + column * CHAR_SIZE, 100 + row * CHAR_SIZE)
 
     def strategy(self, arena=None):
-        self.sprite.moveHorizontal(CHAR_SIZE * random.randrange(-1,2))
-        self.sprite.moveVertical(CHAR_SIZE * random.randrange(-1,2))
+        delta_column = random.randrange(-1,2)
+        self.column += delta_column
+        if self.column < 0:
+            self.column = 0
+        elif self.column > ARENA_WIDTH:
+            self.column = ARENA_WIDTH
+
+        delta_row = random.randrange(-1,2)
+        self.row += delta_row
+        if self.row < 0:
+            self.row = 0
+        elif self.row > ARENA_HEIGHT:
+            self.row = ARENA_HEIGHT
+
+        self.sprite.moveHorizontal(CHAR_SIZE * delta_column)
+        self.sprite.moveVertical(CHAR_SIZE * delta_row)
 
 
 class MySprite(pygame.sprite.Sprite):
@@ -109,6 +123,7 @@ for _ in range(10):
 
 turn = 0
 font = pygame.font.SysFont('Arial', 24)
+small_font = pygame.font.SysFont('Arial', 14)
 #turn_display = font.render('hello {}'.format(turn), True, WHITE)
 
 
@@ -125,16 +140,18 @@ while carryOn:
 
     #for s in all_sprites_list:
     #    s.moveRight(CHAR_SIZE)
-
+    screen.fill(BLACK)
+    pygame.draw.rect(screen, WHITE, [100,100, ARENA_WIDTH * CHAR_SIZE, ARENA_HEIGHT * CHAR_SIZE])
 
     for c in arena.characters:
         c.strategy()
+        character_coords_display = small_font.render("{}, {}".format(str(c.column), str(c.row)), False, PURPLE)
+        screen.blit(character_coords_display,(c.sprite.rect.x, c.sprite.rect.y - 15))
 
 
     all_sprites_list.update()
 
-    screen.fill(BLACK)
-    pygame.draw.rect(screen, WHITE, [100,100, ARENA_WIDTH * CHAR_SIZE, ARENA_HEIGHT * CHAR_SIZE])
+
     
     all_sprites_list.draw(screen)
 
