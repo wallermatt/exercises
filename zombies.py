@@ -20,20 +20,28 @@ RED = (255, 0, 0)
 PURPLE = (255, 0, 255)
 BLACK = (0, 0, 0)
 
+
+class Arena:
+
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.characters = []
+
 class RandomPerson:
     COLOUR = GREY
 
     def __init__(self, column, row):
         self.column = column
         self.row = row
-        self.NPC = NPC(self.COLOUR, 100 + column * CHAR_SIZE, 100 + row * CHAR_SIZE)
+        self.sprite = MySprite(self.COLOUR, 100 + column * CHAR_SIZE, 100 + row * CHAR_SIZE)
 
     def strategy(self, arena=None):
-        self.NPC.moveRight(CHAR_SIZE * random.randrange(-1,2))
-        self.NPC.moveDown(CHAR_SIZE * random.randrange(-1,2))
+        self.sprite.moveHorizontal(CHAR_SIZE * random.randrange(-1,2))
+        self.sprite.moveVertical(CHAR_SIZE * random.randrange(-1,2))
 
 
-class NPC(pygame.sprite.Sprite):
+class MySprite(pygame.sprite.Sprite):
     def __init__(self, colour, x, y):
         # Call the parent class (Sprite) constructor
         super().__init__()
@@ -60,17 +68,26 @@ class NPC(pygame.sprite.Sprite):
             self.rect.x += pixels
  
     def moveLeft(self, pixels):
-        if not self.rect.x + pixels <= 100:
+        if not self.rect.x - pixels <= 100:
             self.rect.x -= pixels
 
     def moveUp(self, pixels):
-        if not self.rect.y + pixels <= 100:
+        if not self.rect.y - pixels <= 100:
             self.rect.y -= pixels
 
     def moveDown(self, pixels):
         if not self.rect.y + pixels >= 100 + ARENA_HEIGHT * CHAR_SIZE:
             self.rect.y += pixels
 
+    def moveHorizontal(self, pixels):
+        if (self.rect.x + pixels < 100 + ARENA_WIDTH * CHAR_SIZE) and \
+           (self.rect.x + pixels >= 100):
+           self.rect.x += pixels
+
+    def moveVertical(self, pixels):
+        if (self.rect.y + pixels < 100 + ARENA_WIDTH * CHAR_SIZE) and \
+           (self.rect.y + pixels >= 100):
+           self.rect.y += pixels
 
 pygame.init()
 
@@ -80,11 +97,15 @@ pygame.display.set_caption("Zombies")
 carryOn = True
 clock=pygame.time.Clock()
 
+
 all_sprites_list = pygame.sprite.Group()
 
+arena = Arena(ARENA_WIDTH, ARENA_HEIGHT)
 
 for _ in range(10):
-    all_sprites_list.add(NPC(RED, random.randrange(0, ARENA_WIDTH), random.randrange(0, ARENA_HEIGHT)))
+    rp = RandomPerson(random.randrange(0, ARENA_WIDTH), random.randrange(0, ARENA_HEIGHT))
+    arena.characters.append(rp)
+    all_sprites_list.add(rp.sprite)
 
 turn = 0
 font = pygame.font.SysFont('Arial', 24)
@@ -102,8 +123,14 @@ while carryOn:
             if event.key==pygame.K_x: #Pressing the x Key will quit the game
                     carryOn=False
 
-    for s in all_sprites_list:
-        s.moveRight(CHAR_SIZE)
+    #for s in all_sprites_list:
+    #    s.moveRight(CHAR_SIZE)
+
+
+    for c in arena.characters:
+        c.strategy()
+
+
     all_sprites_list.update()
 
     screen.fill(BLACK)
