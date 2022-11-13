@@ -94,9 +94,12 @@ class Zombie:
             if self.row < closest_human.row and self.row < arena.height:
                 self.row += 1
                 self.sprite.moveVertical(CHAR_SIZE)
-            elif self.row > closest_human.column and self.row < 0:
-                self.column -= 1 
+            elif self.row > closest_human.row and self.row > 0:
+                self.row -= 1 
                 self.sprite.moveVertical(-CHAR_SIZE)
+
+            if self.column == closest_human.column and self.row == closest_human.row:
+                closest_human = 
 
 
 
@@ -166,7 +169,7 @@ for _ in range(1):
     arena.characters.append(z)
     all_sprites_list.add(z.sprite)
 
-for _ in range(10):
+for _ in range(1):
     rp = RandomPerson(random.randrange(0, ARENA_WIDTH), random.randrange(0, ARENA_HEIGHT))
     arena.characters.append(rp)
     all_sprites_list.add(rp.sprite)
