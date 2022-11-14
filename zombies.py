@@ -35,6 +35,7 @@ class Arena:
         self.width = width
         self.height = height
         self.characters = []
+        self.all_sprites_list = []
 
 class RandomPerson:
     TYPE = HUMAN
@@ -76,13 +77,15 @@ class Zombie:
 
     def strategy(self, arena):
         closest_human = None
+        closest_human_index = None
         closest_human_distance = float("inf")
         #import ipdb; ipdb.set_trace()
-        for h in [e for e in arena.characters if e.TYPE == HUMAN]:
+        for i, h in [(i, e) for i, e in enumerate(arena.characters) if e.TYPE == HUMAN]:
             distance = calc_distance((self.column, self.row), (h.column, h.row))   
             if not closest_human or distance <  closest_human_distance:
                 closest_human = h
                 closest_human_distance = distance
+                closest_human_index = i
         if closest_human:
             if self.column < closest_human.column and self.column < arena.width:
                 self.column += 1
@@ -99,7 +102,16 @@ class Zombie:
                 self.sprite.moveVertical(-CHAR_SIZE)
 
             if self.column == closest_human.column and self.row == closest_human.row:
-                closest_human = 
+                #import ipdb; ipdb.set_trace()
+                closest_human.sprite.kill()
+                new_zombie = Zombie(closest_human.column, closest_human.row)
+                arena.characters[closest_human_index] = new_zombie
+                arena.all_sprites_list.add(new_zombie.sprite)
+                arena.all_sprites_list.update()
+
+
+
+                
 
 
 
@@ -159,20 +171,18 @@ pygame.display.set_caption("Zombies")
 carryOn = True
 clock=pygame.time.Clock()
 
-
-all_sprites_list = pygame.sprite.Group()
-
 arena = Arena(ARENA_WIDTH, ARENA_HEIGHT)
+arena.all_sprites_list = pygame.sprite.Group()
 
 for _ in range(1):
     z = Zombie(random.randrange(0, ARENA_WIDTH), random.randrange(0, ARENA_HEIGHT))
     arena.characters.append(z)
-    all_sprites_list.add(z.sprite)
+    arena.all_sprites_list.add(z.sprite)
 
-for _ in range(1):
+for _ in range(15):
     rp = RandomPerson(random.randrange(0, ARENA_WIDTH), random.randrange(0, ARENA_HEIGHT))
     arena.characters.append(rp)
-    all_sprites_list.add(rp.sprite)
+    arena.all_sprites_list.add(rp.sprite)
 
 
 turn = 0
@@ -203,14 +213,20 @@ while carryOn:
         screen.blit(character_coords_display,(c.sprite.rect.x, c.sprite.rect.y - 15))
 
 
-    all_sprites_list.update()
+    arena.all_sprites_list.update()
 
 
     
-    all_sprites_list.draw(screen)
+    arena.all_sprites_list.draw(screen)
 
     turn_display = font.render("Current Turn: {}".format(str(turn)), False, WHITE)
     screen.blit(turn_display,(10,10))
+
+    human_count = len([e for e in arena.characters if e.TYPE==HUMAN])
+    zombie_count = len([e for e in arena.characters if e.TYPE==ZOMBIE])
+
+    character_counts_display = font.render("Humans: {}, Zombies: {}".format(str(human_count), str(zombie_count)), False, WHITE)
+    screen.blit(character_counts_display,(10,50))
 
     #pygame.display.update()
     #Refresh Screen
