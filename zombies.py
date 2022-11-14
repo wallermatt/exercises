@@ -70,12 +70,17 @@ class Zombie:
     TYPE = ZOMBIE
     COLOUR = RED
 
-    def __init__(self, column, row):
+    def __init__(self, column, row, pause=3):
         self.column = column
         self.row = row
         self.sprite = MySprite(self.COLOUR, 100 + column * CHAR_SIZE, 100 + row * CHAR_SIZE)
+        self.pause = pause
 
     def strategy(self, arena):
+        if self.pause:
+            self.pause -= 1
+            return
+
         closest_human = None
         closest_human_index = None
         closest_human_distance = float("inf")
@@ -179,7 +184,7 @@ for _ in range(1):
     arena.characters.append(z)
     arena.all_sprites_list.add(z.sprite)
 
-for _ in range(15):
+for _ in range(35):
     rp = RandomPerson(random.randrange(0, ARENA_WIDTH), random.randrange(0, ARENA_HEIGHT))
     arena.characters.append(rp)
     arena.all_sprites_list.add(rp.sprite)
