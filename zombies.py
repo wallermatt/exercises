@@ -65,6 +65,42 @@ class RandomPerson:
         else:
             self.sprite.moveVertical(CHAR_SIZE * delta_row)
 
+class RunningMan:
+    TYPE = HUMAN
+    COLOUR = GREEN
+
+    def __init__(self, column, row):
+        self.column = column
+        self.row = row
+        self.sprite = MySprite(self.COLOUR, 100 + column * CHAR_SIZE, 100 + row * CHAR_SIZE)
+
+    def strategy(self, arena):
+        closest_zombie = None
+        closest_zombie_index = None
+        closest_zombie_distance = float("inf")
+        #import ipdb; ipdb.set_trace()
+        for i, z in [(i, e) for i, e in enumerate(arena.characters) if e.TYPE == ZOMBIE]:
+            distance = calc_distance((self.column, self.row), (z.column, z.row))   
+            if not closest_zombie or distance <  closest_zombie_distance:
+                closest_zombie = z
+                closest_zombie_distance = distance
+                closest_zombie_index = i
+        if closest_zombie:
+            if self.column < closest_zombie.column and self.column > 0:
+                self.column -= 1
+                self.sprite.moveHorizontal(-CHAR_SIZE)
+            elif self.column > closest_zombie.column and self.column < arena.width:
+                self.column += 1
+                self.sprite.moveHorizontal(CHAR_SIZE)
+
+            if self.row < closest_zombie.row and self.row > 0:
+                self.row -= 1
+                self.sprite.moveVertical(-CHAR_SIZE)
+            elif self.row > closest_zombie.row and self.row < arena.height:
+                self.row += 1 
+                self.sprite.moveVertical(CHAR_SIZE)
+
+
 
 class Zombie:
     TYPE = ZOMBIE
@@ -169,10 +205,15 @@ for _ in range(1):
     arena.characters.append(z)
     arena.all_sprites_list.add(z.sprite)
 
-for _ in range(35):
+for _ in range(1):
     rp = RandomPerson(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
     arena.characters.append(rp)
     arena.all_sprites_list.add(rp.sprite)
+
+for _ in range(1):
+    rm = RunningMan(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
+    arena.characters.append(rm)
+    arena.all_sprites_list.add(rm.sprite)
 
 
 turn = 0
@@ -199,8 +240,8 @@ while carryOn:
 
     for c in arena.characters:
         c.strategy(arena)
-        #character_coords_display = small_font.render("{}, {}".format(str(c.column), str(c.row)), False, PURPLE)
-        character_coords_display = small_font.render("{}, {}".format(str(c.sprite.rect.x), str(c.sprite.rect.y)), False, PURPLE)
+        character_coords_display = small_font.render("{}, {}".format(str(c.column), str(c.row)), False, PURPLE)
+        #character_coords_display = small_font.render("{}, {}".format(str(c.sprite.rect.x), str(c.sprite.rect.y)), False, PURPLE)
         screen.blit(character_coords_display,(c.sprite.rect.x, c.sprite.rect.y - 15))
 
 
