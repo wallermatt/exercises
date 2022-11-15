@@ -70,7 +70,7 @@ class Zombie:
     TYPE = ZOMBIE
     COLOUR = RED
 
-    def __init__(self, column, row, pause=3):
+    def __init__(self, column, row, pause=10):
         self.column = column
         self.row = row
         self.sprite = MySprite(self.COLOUR, 100 + column * CHAR_SIZE, 100 + row * CHAR_SIZE)
@@ -109,10 +109,11 @@ class Zombie:
             if self.column == closest_human.column and self.row == closest_human.row:
                 #import ipdb; ipdb.set_trace()
                 closest_human.sprite.kill()
-                new_zombie = Zombie(closest_human.column, closest_human.row)
+                new_zombie = Zombie(self.column, self.row)
                 arena.characters[closest_human_index] = new_zombie
                 arena.all_sprites_list.add(new_zombie.sprite)
                 arena.all_sprites_list.update()
+                self.pause = 3
 
 
 
@@ -141,32 +142,16 @@ class MySprite(pygame.sprite.Sprite):
 
         # Fetch the rectangle object that has the dimensions of the image.
         #self.rect = self.image.get_rect()
- 
-    def moveRight(self, pixels):
-        if not self.rect.x + pixels >= 100 + ARENA_WIDTH * CHAR_SIZE:
-            self.rect.x += pixels
- 
-    def moveLeft(self, pixels):
-        if not self.rect.x - pixels <= 100:
-            self.rect.x -= pixels
-
-    def moveUp(self, pixels):
-        if not self.rect.y - pixels <= 100:
-            self.rect.y -= pixels
-
-    def moveDown(self, pixels):
-        if not self.rect.y + pixels >= 100 + ARENA_HEIGHT * CHAR_SIZE:
-            self.rect.y += pixels
 
     def moveHorizontal(self, pixels):
-        if (self.rect.x + pixels < 100 + ARENA_WIDTH * CHAR_SIZE) and \
+        if (self.rect.x + pixels <= 100 + ARENA_WIDTH * CHAR_SIZE) and \
            (self.rect.x + pixels >= 100):
-           self.rect.x += pixels
+            self.rect.x += pixels
 
     def moveVertical(self, pixels):
-        if (self.rect.y + pixels < 100 + ARENA_WIDTH * CHAR_SIZE) and \
+        if (self.rect.y + pixels <= 100 + ARENA_WIDTH * CHAR_SIZE) and \
            (self.rect.y + pixels >= 100):
-           self.rect.y += pixels
+            self.rect.y += pixels
 
 pygame.init()
 
@@ -180,12 +165,12 @@ arena = Arena(ARENA_WIDTH, ARENA_HEIGHT)
 arena.all_sprites_list = pygame.sprite.Group()
 
 for _ in range(1):
-    z = Zombie(random.randrange(0, ARENA_WIDTH), random.randrange(0, ARENA_HEIGHT))
+    z = Zombie(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
     arena.characters.append(z)
     arena.all_sprites_list.add(z.sprite)
 
 for _ in range(35):
-    rp = RandomPerson(random.randrange(0, ARENA_WIDTH), random.randrange(0, ARENA_HEIGHT))
+    rp = RandomPerson(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
     arena.characters.append(rp)
     arena.all_sprites_list.add(rp.sprite)
 
@@ -210,11 +195,12 @@ while carryOn:
     #for s in all_sprites_list:
     #    s.moveRight(CHAR_SIZE)
     screen.fill(BLACK)
-    pygame.draw.rect(screen, WHITE, [100,100, ARENA_WIDTH * CHAR_SIZE, ARENA_HEIGHT * CHAR_SIZE])
+    pygame.draw.rect(screen, WHITE, [100,100, (ARENA_WIDTH+1) * CHAR_SIZE, (ARENA_HEIGHT+1) * CHAR_SIZE])
 
     for c in arena.characters:
         c.strategy(arena)
-        character_coords_display = small_font.render("{}, {}".format(str(c.column), str(c.row)), False, PURPLE)
+        #character_coords_display = small_font.render("{}, {}".format(str(c.column), str(c.row)), False, PURPLE)
+        character_coords_display = small_font.render("{}, {}".format(str(c.sprite.rect.x), str(c.sprite.rect.y)), False, PURPLE)
         screen.blit(character_coords_display,(c.sprite.rect.x, c.sprite.rect.y - 15))
 
 
