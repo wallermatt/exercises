@@ -205,12 +205,12 @@ for _ in range(1):
     arena.characters.append(z)
     arena.all_sprites_list.add(z.sprite)
 
-for _ in range(1):
+for _ in range(10):
     rp = RandomPerson(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
     arena.characters.append(rp)
     arena.all_sprites_list.add(rp.sprite)
 
-for _ in range(1):
+for _ in range(10):
     rm = RunningMan(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
     arena.characters.append(rm)
     arena.all_sprites_list.add(rm.sprite)
