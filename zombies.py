@@ -29,11 +29,49 @@ def calc_distance(coords_from, coords_to):
     xt, yt = coords_to
     return ((xf - xt)**2 + (yf - yt)**2)**0.5
 
+
+def get_closest_character(coords, char_type, arena):
+    column, row = coords
+    closest_char = None
+    closest_char_index = None
+    closest_char_distance = float("inf")
+    for i, c in [(i, e) for i, e in enumerate(arena.characters) if e.TYPE == char_type]:
+        distance = calc_distance((column, row), (c.column, c.row))   
+        if not closest_char or distance <  closest_char_distance:
+            closest_char = c
+            closest_char_distance = distance
+            closest_char_index = i
+    return closest_char, closest_char_index, closest_char_distance
+
+
+def correct_coords(coords, arena):
+    column, row = coords
+    if column < 0:
+        column = 0
+    elif column > arena.width:
+        column = arena.width
+
+    if row < 0:
+        row = 0
+    elif row > arena.height:
+        row = arena.height
+
+    return (column, row)
+
+
+def convert_coords_to_pixels(coords, arena):
+    column, row = coords
+    x = 100 + column * arena.char_size
+    y = 100 + row * arena.char_size
+    return (x, y)
+
+
 class Arena:
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, char_size):
         self.width = width
         self.height = height
+        self.char_size = char_size
         self.characters = []
         self.all_sprites_list = []
 
@@ -197,7 +235,7 @@ pygame.display.set_caption("Zombies")
 carryOn = True
 clock=pygame.time.Clock()
 
-arena = Arena(ARENA_WIDTH, ARENA_HEIGHT)
+arena = Arena(ARENA_WIDTH, ARENA_HEIGHT, CHAR_SIZE)
 arena.all_sprites_list = pygame.sprite.Group()
 
 for _ in range(1):
