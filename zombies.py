@@ -134,10 +134,10 @@ class CleverMan:
         best_distance = closest_zombie_distance
         for new_coords in adj_coords:
             _, _, new_distance = get_closest_character(adj_coords[new_coords], ZOMBIE, arena)
-        if new_distance > best_distance:
-            import ipdb; ipdb.set_trace()
-            best_distance = new_distance
-            best_position = new_coords
+            if new_distance > best_distance:
+                import ipdb; ipdb.set_trace()
+                best_distance = new_distance
+                best_position = new_coords
 
         x, y = convert_coords_to_pixels(best_position, arena)
         self.sprite.rect.x = x
@@ -281,7 +281,7 @@ arena = Arena(ARENA_WIDTH, ARENA_HEIGHT, CHAR_SIZE)
 arena.all_sprites_list = pygame.sprite.Group()
 
 
-for _ in range(2):
+for _ in range(1):
     z = Zombie(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
     arena.characters.append(z)
     arena.all_sprites_list.add(z.sprite)
@@ -296,7 +296,7 @@ for _ in range(1):
     arena.characters.append(rm)
     arena.all_sprites_list.add(rm.sprite)
 
-for _ in range(5):
+for _ in range(1):
     cm = CleverMan(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
     arena.characters.append(cm)
     arena.all_sprites_list.add(cm.sprite)
