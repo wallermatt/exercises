@@ -66,6 +66,15 @@ def convert_coords_to_pixels(coords, arena):
     return (x, y)
 
 
+def generate_adjacent_coords(coords, distance, arena):
+    adj_coords = {}
+    column, row = coords
+    for i, c in enumerate([-distance, 0, distance]):
+        for j, r in enumerate([-distance, 0, distance]):
+            adj_coords[correct_coords((column + i - 1, row + j - 1), arena)] = correct_coords((column + c, row + r), arena)
+    return adj_coords
+
+
 class Arena:
 
     def __init__(self, width, height, char_size):
@@ -102,6 +111,39 @@ class RandomPerson:
             self.row = ARENA_HEIGHT
         else:
             self.sprite.moveVertical(CHAR_SIZE * delta_row)
+
+
+class CleverMan:
+    TYPE = HUMAN
+    COLOUR = PURPLE
+
+    def __init__(self, column, row):
+        self.column = column
+        self.row = row
+        self.sprite = MySprite(self.COLOUR, 100 + column * CHAR_SIZE, 100 + row * CHAR_SIZE)
+
+    def strategy(self, arena):
+        # get closest zombie
+        closest_zombie, _, closest_zombie_distance = get_closest_character((self.column, self.row), ZOMBIE, arena)
+        
+        # get positions 2 away
+        adj_coords = generate_adjacent_coords((self.column, self.row), 2, arena)
+
+        # find closest zombie for each
+        best_position = (self.column, self.row)
+        best_distance = closest_zombie_distance
+        for new_coords in adj_coords:
+            _, _, new_distance = get_closest_character(adj_coords[new_coords], ZOMBIE, arena)
+        if new_distance > best_distance:
+            import ipdb; ipdb.set_trace()
+            best_distance = new_distance
+            best_position = new_coords
+
+        x, y = convert_coords_to_pixels(best_position, arena)
+        self.sprite.rect.x = x
+        self.sprite.rect.y = y
+
+
 
 class RunningMan:
     TYPE = HUMAN
@@ -238,20 +280,26 @@ clock=pygame.time.Clock()
 arena = Arena(ARENA_WIDTH, ARENA_HEIGHT, CHAR_SIZE)
 arena.all_sprites_list = pygame.sprite.Group()
 
-for _ in range(1):
+
+for _ in range(2):
     z = Zombie(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
     arena.characters.append(z)
     arena.all_sprites_list.add(z.sprite)
 
-for _ in range(10):
+for _ in range(1):
     rp = RandomPerson(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
     arena.characters.append(rp)
     arena.all_sprites_list.add(rp.sprite)
 
-for _ in range(10):
+for _ in range(1):
     rm = RunningMan(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
     arena.characters.append(rm)
     arena.all_sprites_list.add(rm.sprite)
+
+for _ in range(5):
+    cm = CleverMan(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
+    arena.characters.append(cm)
+    arena.all_sprites_list.add(cm.sprite)
 
 
 turn = 0
