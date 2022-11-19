@@ -134,11 +134,13 @@ class CleverMan:
         best_distance = closest_zombie_distance
         for new_coords in adj_coords:
             _, _, new_distance = get_closest_character(adj_coords[new_coords], ZOMBIE, arena)
+            #print(new_coords, new_distance)
             if new_distance > best_distance:
-                import ipdb; ipdb.set_trace()
+                #import ipdb; ipdb.set_trace()
                 best_distance = new_distance
                 best_position = new_coords
 
+        self.column, self.row = best_position
         x, y = convert_coords_to_pixels(best_position, arena)
         self.sprite.rect.x = x
         self.sprite.rect.y = y
@@ -269,88 +271,94 @@ class MySprite(pygame.sprite.Sprite):
            (self.rect.y + pixels >= 100):
             self.rect.y += pixels
 
-pygame.init()
 
-screen = pygame.display.set_mode((800, 800))
-pygame.display.set_caption("Zombies")
+def main():
+    pygame.init()
 
-carryOn = True
-clock=pygame.time.Clock()
+    screen = pygame.display.set_mode((800, 800))
+    pygame.display.set_caption("Zombies")
 
-arena = Arena(ARENA_WIDTH, ARENA_HEIGHT, CHAR_SIZE)
-arena.all_sprites_list = pygame.sprite.Group()
+    carryOn = True
+    clock=pygame.time.Clock()
 
-
-for _ in range(1):
-    z = Zombie(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
-    arena.characters.append(z)
-    arena.all_sprites_list.add(z.sprite)
-
-for _ in range(1):
-    rp = RandomPerson(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
-    arena.characters.append(rp)
-    arena.all_sprites_list.add(rp.sprite)
-
-for _ in range(1):
-    rm = RunningMan(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
-    arena.characters.append(rm)
-    arena.all_sprites_list.add(rm.sprite)
-
-for _ in range(1):
-    cm = CleverMan(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
-    arena.characters.append(cm)
-    arena.all_sprites_list.add(cm.sprite)
+    arena = Arena(ARENA_WIDTH, ARENA_HEIGHT, CHAR_SIZE)
+    arena.all_sprites_list = pygame.sprite.Group()
 
 
-turn = 0
-font = pygame.font.SysFont('Arial', 24)
-small_font = pygame.font.SysFont('Arial', 14)
-#turn_display = font.render('hello {}'.format(turn), True, WHITE)
+    for _ in range(1):
+        z = Zombie(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
+        arena.characters.append(z)
+        arena.all_sprites_list.add(z.sprite)
+
+    for _ in range(1):
+        rp = RandomPerson(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
+        arena.characters.append(rp)
+        arena.all_sprites_list.add(rp.sprite)
+
+    for _ in range(1):
+        rm = RunningMan(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
+        arena.characters.append(rm)
+        arena.all_sprites_list.add(rm.sprite)
+
+    for _ in range(1):
+        cm = CleverMan(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
+        arena.characters.append(cm)
+        arena.all_sprites_list.add(cm.sprite)
+
+
+    turn = 0
+    font = pygame.font.SysFont('Arial', 24)
+    small_font = pygame.font.SysFont('Arial', 14)
+    #turn_display = font.render('hello {}'.format(turn), True, WHITE)
 
 
 
 
-while carryOn:
-    turn += 1
-    for event in pygame.event.get():
-        if event.type==pygame.QUIT:
-            carryOn=False
-        elif event.type==pygame.KEYDOWN:
-            if event.key==pygame.K_x: #Pressing the x Key will quit the game
-                    carryOn=False
+    while carryOn:
+        turn += 1
+        for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                carryOn=False
+            elif event.type==pygame.KEYDOWN:
+                if event.key==pygame.K_x: #Pressing the x Key will quit the game
+                        carryOn=False
 
-    #for s in all_sprites_list:
-    #    s.moveRight(CHAR_SIZE)
-    screen.fill(BLACK)
-    pygame.draw.rect(screen, WHITE, [100,100, (ARENA_WIDTH+1) * CHAR_SIZE, (ARENA_HEIGHT+1) * CHAR_SIZE])
+        #for s in all_sprites_list:
+        #    s.moveRight(CHAR_SIZE)
+        screen.fill(BLACK)
+        pygame.draw.rect(screen, WHITE, [100,100, (ARENA_WIDTH+1) * CHAR_SIZE, (ARENA_HEIGHT+1) * CHAR_SIZE])
 
-    for c in arena.characters:
-        c.strategy(arena)
-        character_coords_display = small_font.render("{}, {}".format(str(c.column), str(c.row)), False, PURPLE)
-        #character_coords_display = small_font.render("{}, {}".format(str(c.sprite.rect.x), str(c.sprite.rect.y)), False, PURPLE)
-        screen.blit(character_coords_display,(c.sprite.rect.x, c.sprite.rect.y - 15))
-
-
-    arena.all_sprites_list.update()
+        for c in arena.characters:
+            c.strategy(arena)
+            character_coords_display = small_font.render("{}, {}".format(str(c.column), str(c.row)), False, PURPLE)
+            #character_coords_display = small_font.render("{}, {}".format(str(c.sprite.rect.x), str(c.sprite.rect.y)), False, PURPLE)
+            screen.blit(character_coords_display,(c.sprite.rect.x, c.sprite.rect.y - 15))
 
 
+        arena.all_sprites_list.update()
+
+
+        
+        arena.all_sprites_list.draw(screen)
+
+        turn_display = font.render("Current Turn: {}".format(str(turn)), False, WHITE)
+        screen.blit(turn_display,(10,10))
+
+        human_count = len([e for e in arena.characters if e.TYPE==HUMAN])
+        zombie_count = len([e for e in arena.characters if e.TYPE==ZOMBIE])
+
+        character_counts_display = font.render("Humans: {}, Zombies: {}".format(str(human_count), str(zombie_count)), False, WHITE)
+        screen.blit(character_counts_display,(10,50))
+
+        #pygame.display.update()
+        #Refresh Screen
+        pygame.display.flip()
+
+        #Number of frames per second e.g. 60
+        clock.tick(2)
     
-    arena.all_sprites_list.draw(screen)
+    pygame.quit() 
 
-    turn_display = font.render("Current Turn: {}".format(str(turn)), False, WHITE)
-    screen.blit(turn_display,(10,10))
 
-    human_count = len([e for e in arena.characters if e.TYPE==HUMAN])
-    zombie_count = len([e for e in arena.characters if e.TYPE==ZOMBIE])
-
-    character_counts_display = font.render("Humans: {}, Zombies: {}".format(str(human_count), str(zombie_count)), False, WHITE)
-    screen.blit(character_counts_display,(10,50))
-
-    #pygame.display.update()
-    #Refresh Screen
-    pygame.display.flip()
-
-    #Number of frames per second e.g. 60
-    clock.tick(2)
- 
-pygame.quit() 
+if __name__ == "__main__":
+    main()
