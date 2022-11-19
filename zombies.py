@@ -127,7 +127,7 @@ class CleverMan:
         closest_zombie, _, closest_zombie_distance = get_closest_character((self.column, self.row), ZOMBIE, arena)
         
         # get positions 2 away
-        adj_coords = generate_adjacent_coords((self.column, self.row), 2, arena)
+        adj_coords = generate_adjacent_coords((self.column, self.row), 3, arena)
 
         # find closest zombie for each
         best_position = (self.column, self.row)
@@ -290,7 +290,7 @@ def main():
         arena.characters.append(z)
         arena.all_sprites_list.add(z.sprite)
 
-    for _ in range(1):
+    for _ in range(0):
         rp = RandomPerson(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
         arena.characters.append(rp)
         arena.all_sprites_list.add(rp.sprite)
@@ -300,7 +300,7 @@ def main():
         arena.characters.append(rm)
         arena.all_sprites_list.add(rm.sprite)
 
-    for _ in range(1):
+    for _ in range(5):
         cm = CleverMan(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
         arena.characters.append(cm)
         arena.all_sprites_list.add(cm.sprite)
