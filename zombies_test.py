@@ -43,3 +43,11 @@ def test_clever_man_strategy(arena):
     assert clever_man.sprite.rect.x == 132
     assert clever_man.sprite.rect.y == 132
 
+
+@pytest.mark.parametrize("coords, closest_column, closest_row, idx, distance", [((1, 1), 5,5,0, 32**0.5), ((5, 5), 5,5,0, 0)])
+def test_get_closest_character_param(arena, coords, closest_column, closest_row, idx, distance):
+    closest_char, closest_char_index, closest_char_distance = get_closest_character(coords, ZOMBIE, arena)
+    assert closest_char.column == closest_column
+    assert closest_char.row == closest_row
+    assert closest_char_index == idx
+    assert closest_char_distance == distance
