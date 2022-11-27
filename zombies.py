@@ -115,7 +115,7 @@ class RandomPerson:
 
 class CleverMan:
     TYPE = HUMAN
-    COLOUR = PURPLE
+    COLOUR = GREEN
 
     def __init__(self, column, row):
         self.column = column
@@ -127,7 +127,7 @@ class CleverMan:
         closest_zombie, _, closest_zombie_distance = get_closest_character((self.column, self.row), ZOMBIE, arena)
         
         # get positions 2 away
-        adj_coords = generate_adjacent_coords((self.column, self.row), 5, arena)
+        adj_coords = generate_adjacent_coords((self.column, self.row), 6, arena)
 
         # find closest zombie for each
         best_position = (self.column, self.row)
@@ -149,7 +149,7 @@ class CleverMan:
 
 class RunningMan:
     TYPE = HUMAN
-    COLOUR = GREEN
+    COLOUR = PURPLE
 
     def __init__(self, column, row):
         self.column = column
@@ -288,7 +288,7 @@ def main():
     arena.all_sprites_list = pygame.sprite.Group()
 
 
-    for _ in range(5):
+    for _ in range(3):
         z = Zombie(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
         arena.characters.append(z)
         arena.all_sprites_list.add(z.sprite)
@@ -303,7 +303,7 @@ def main():
         arena.characters.append(rm)
         arena.all_sprites_list.add(rm.sprite)
 
-    for _ in range(5):
+    for _ in range(50):
         cm = CleverMan(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
         arena.characters.append(cm)
         arena.all_sprites_list.add(cm.sprite)
@@ -335,7 +335,7 @@ def main():
             c.strategy(arena)
             character_coords_display = small_font.render("{}, {}".format(str(c.column), str(c.row)), False, PURPLE)
             #character_coords_display = small_font.render("{}, {}".format(str(c.sprite.rect.x), str(c.sprite.rect.y)), False, PURPLE)
-            screen.blit(character_coords_display,(c.sprite.rect.x, c.sprite.rect.y - 15))
+            #screen.blit(character_coords_display,(c.sprite.rect.x, c.sprite.rect.y - 15))
 
 
         arena.all_sprites_list.update()
@@ -358,7 +358,7 @@ def main():
         pygame.display.flip()
 
         #Number of frames per second e.g. 60
-        clock.tick(2)
+        clock.tick(30)
     
     pygame.quit() 
 
