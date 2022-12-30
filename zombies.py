@@ -288,7 +288,7 @@ def main():
     arena.all_sprites_list = pygame.sprite.Group()
 
 
-    for _ in range(3):
+    for _ in range(1):
         z = Zombie(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
         arena.characters.append(z)
         arena.all_sprites_list.add(z.sprite)
@@ -303,7 +303,7 @@ def main():
         arena.characters.append(rm)
         arena.all_sprites_list.add(rm.sprite)
 
-    for _ in range(50):
+    for _ in range(5):
         cm = CleverMan(random.randrange(0, ARENA_WIDTH+1), random.randrange(0, ARENA_HEIGHT+1))
         arena.characters.append(cm)
         arena.all_sprites_list.add(cm.sprite)
@@ -358,7 +358,7 @@ def main():
         pygame.display.flip()
 
         #Number of frames per second e.g. 60
-        clock.tick(30)
+        clock.tick(10)
     
     pygame.quit() 
 
